@@ -1,24 +1,28 @@
 package com.example.bootaws.basic
 
+import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
 @Service
 class BasicService(
     private val basicRepository: BasicRepositoryLocalStorage
 ) {
-    private fun allItem(){
-        println(basicRepository.findAll())
+    private val log = KotlinLogging.logger {}
+
+    private fun logAllItem(){
+        val list = basicRepository.findAll()
+        log.info("list size : ${list.size}")
+        list.forEach { log.info(it.toString()) }
     }
 
-    fun save(item: Basic): Basic {
-        val basic = basicRepository.save(item)
-        allItem()
-        return basic
-    }
+    fun save(item: Basic) = basicRepository.save(item).wrapItem()
 
-    fun findById(id: Long) : Basic? {
-        val basic = basicRepository.findById(id)
-        allItem()
-        return basic
+    fun findById(id: Long) = basicRepository.findById(id).wrapItem()
+
+    fun deleteById(id: Long) = basicRepository.deleteById(id).wrapItem()
+
+    private fun<T> T.wrapItem(): T {
+        logAllItem()
+        return this
     }
 }

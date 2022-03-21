@@ -1,30 +1,36 @@
 package com.example.bootaws.basic
 
 import org.springframework.stereotype.Component
+import java.lang.RuntimeException
 
 @Component
 class BasicRepositoryLocalStorage(
-    private val store: HashMap<Long, Basic> = HashMap()
+    private var store: MutableList<Basic> = mutableListOf()
 ): BasicRepository<Basic> {
-    override fun findById(id: Long): Basic? {
-        return store[id]
+    companion object {
+        var id: Long = 0
+        fun plusId(): Long {
+            return id++
+        }
+    }
+
+    override fun findById(id: Long): Basic {
+        return store.find { it.id == id } ?: throw RuntimeException("Entity Not Found")
     }
 
     override fun findAll(): List<Basic> {
-        return store.map { it.value }
+        return store
     }
 
     override fun save(item: Basic): Basic {
-        store[item.id] = item
+        item.id = plusId()
+        store.add(item)
         return item
     }
 
-    override fun deleteById(id: Long): Boolean {
-        return if (store[id] == null) {
-            false
-        } else {
-            store.remove(id)
-            true
-        }
+    override fun deleteById(id: Long): Basic {
+        val basic = findById(id)
+        store.remove(basic)
+        return basic
     }
 }
