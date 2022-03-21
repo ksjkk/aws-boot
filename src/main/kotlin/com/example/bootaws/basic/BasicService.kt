@@ -9,10 +9,11 @@ class BasicService(
 ) {
     private val log = KotlinLogging.logger {}
 
-    private fun logAllItem(){
+    private fun<T> T.wrapItem(): T {
         val list = basicRepository.findAll()
         log.info("list size : ${list.size}")
         list.forEach { log.info(it.toString()) }
+        return this
     }
 
     fun save(item: Basic) = basicRepository.save(item).wrapItem()
@@ -21,8 +22,4 @@ class BasicService(
 
     fun deleteById(id: Long) = basicRepository.deleteById(id).wrapItem()
 
-    private fun<T> T.wrapItem(): T {
-        logAllItem()
-        return this
-    }
 }
