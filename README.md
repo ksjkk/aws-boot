@@ -123,5 +123,13 @@ hooks:
 
 ## 무중단 배포
 ```
+scenario
+이중화 LB가 아닌 break, running 상태 이중화
+break 상태의 서버 배포 후 service port 번경
 
+profile
+stop
+start
+health
+switch
 ```
