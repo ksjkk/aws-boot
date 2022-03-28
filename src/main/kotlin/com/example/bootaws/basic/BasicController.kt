@@ -1,30 +1,19 @@
 package com.example.bootaws.basic
 
-import mu.KotlinLogging
-import org.springframework.web.bind.annotation.*
+import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ResponseBody
 
-@RestController
-@RequestMapping("/api/v1/basic")
-class BasicController(
-    private val basicService: BasicService
-) {
-    private val log = KotlinLogging.logger {}
+@Controller
+class BasicController {
 
-    @PostMapping(value = ["/save"])
-    fun save(@RequestBody item: Basic): Basic {
-        log.debug("save request param = $item")
-        return basicService.save(item)
-    }
+    @GetMapping(value = ["/ping"])
+    fun ping() = "pong".wrapOk()
 
-    @GetMapping(value = ["/get/{id}"])
-    fun getItem(@PathVariable id: Long): Basic {
-        log.debug("get id = $id")
-        return basicService.findById(id)
-    }
+    @GetMapping(value = ["/health"])
+    @ResponseBody
+    fun healthCheck() = "ok"
 
-    @DeleteMapping(value = ["/delete/{id}"])
-    fun deleteItem(@PathVariable id: Long): Basic {
-        log.debug("delete id = $id")
-        return basicService.deleteById(id)
-    }
+    private fun <T> T?.wrapOk() = ResponseEntity.ok(this)
 }
